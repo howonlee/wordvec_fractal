@@ -19,7 +19,7 @@ def mat_to_points(mat):
 
 def box_hash(point, box_size):
     point = list(point)
-    point = map(lambda x: int(x) // box_size, point)
+    point = map(lambda x: (x) // box_size, point)
     return tuple(point)
 
 def num_boxes(points, box_size):
