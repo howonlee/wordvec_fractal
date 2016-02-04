@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def sierpinski(order=5):
     # for testing
@@ -21,12 +22,23 @@ def mat_to_points(mat):
                 )
     return points
 
-def box_hash(point, mod, prod=10000):
+################## do this properly
+def box_hash(point, div, prod=1000):
     point = list(point)
-    point = map(lambda x: int(x * prod), point)
-    return point
+    point = map(lambda x: int(x * prod) // div, point)
+    return tuple(point)
+
+def num_boxes(points, div):
+    boxes = set()
+    for point in points:
+        hsh = box_hash(point, div)
+        boxes.add(hsh)
+    return len(boxes)
 
 if __name__ == "__main__":
-    test_pts = mat_to_points(sierpinski(order=3))
-    for point in test_pts:
-        print box_hash(point, 5)
+    test_pts = mat_to_points(sierpinski(order=6))
+    boxes = []
+    for x in xrange(1, 10):
+        boxes.append(num_boxes(test_pts, x))
+    plt.plot(boxes)
+    plt.show()
