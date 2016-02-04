@@ -8,11 +8,25 @@ def sierpinski(order=5):
         arr = np.kron(arr, gen)
     return arr
 
+def mat_to_points(mat):
+    points = []
+    for x in xrange(mat.shape[0]):
+        for y in xrange(mat.shape[1]):
+            if mat[x,y] > 0:
+                points.append(
+                        (
+                            (float(x) / mat.shape[0]),
+                            (float(y) / mat.shape[1])
+                        )
+                )
+    return points
+
 def box_hash(point, mod, prod=10000):
     point = list(point)
     point = map(lambda x: int(x * prod), point)
     return point
 
 if __name__ == "__main__":
-    print sierpinski(order=3)
-    # print box_hash(np.array([0.2, 0.3]), 5)
+    test_pts = mat_to_points(sierpinski(order=3))
+    for point in test_pts:
+        print box_hash(point, 5)
