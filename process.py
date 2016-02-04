@@ -22,8 +22,7 @@ def mat_to_points(mat):
                 )
     return points
 
-################## do this properly
-def box_hash(point, div, prod=1000):
+def box_hash(point, div):
     point = list(point)
     point = map(lambda x: int(x * prod) // div, point)
     return tuple(point)
@@ -36,9 +35,9 @@ def num_boxes(points, div):
     return len(boxes)
 
 if __name__ == "__main__":
-    test_pts = mat_to_points(sierpinski(order=6))
+    test_pts = mat_to_points(sierpinski(order=9))
     boxes = []
-    for x in xrange(1, 10):
+    for x in [8,16,32,64,128,256,512,1024]:
         boxes.append(num_boxes(test_pts, x))
     plt.plot(boxes)
     plt.show()
