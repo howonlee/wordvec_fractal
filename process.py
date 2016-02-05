@@ -37,9 +37,12 @@ def correlation_integral(points, epsilon, dist_fn=l2_dist):
 
 if __name__ == "__main__":
     sierpinski_points = mat_to_points(sierpinski(5))
-    epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+    epsilons = [0.0005, 0.001, 0.002, 0.004, 0.008, 0.016, 0.032, 0.064]
     correlation_integrals = []
     for epsilon in epsilons:
         correlation_integrals.append(correlation_integral(sierpinski_points, epsilon))
-    plt.loglog(epsilons, correlation_integrals)
+    plt.loglog(epsilons, correlation_integrals, "o")
+    plt.title("Correlation dimension for sierpinski") ########### !!!
+    plt.xlabel("epsilons")
+    plt.xlabel("correlation integrals")
     plt.show()
