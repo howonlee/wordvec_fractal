@@ -9,6 +9,13 @@ def sierpinski(order=5):
         arr = np.kron(arr, gen)
     return arr
 
+def circle():
+    xx, yy = np.mgrid[:200, :200]
+    circle = (xx - 100) ** 2 + (yy - 100) ** 2
+    donut = np.logical_and(circle < (6400 + 60), circle > (6400 - 60))
+    print donut
+    return donut
+
 def mat_to_points(mat):
     points = []
     for x in xrange(mat.shape[0]):
@@ -30,7 +37,9 @@ def num_boxes(points, box_size):
     return len(boxes)
 
 if __name__ == "__main__":
-    test_pts = mat_to_points(sierpinski(order=9))
+    # test_pts = mat_to_points(sierpinski(order=9))
+    test_pts = mat_to_points(circle())
+    print test_pts
     boxes = []
     for x in [1,2,4,8,16,32,64]:
         boxes.append(num_boxes(test_pts, x))
