@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import itertools
 
 def sierpinski(order=5):
     # for testing
@@ -21,9 +22,24 @@ def mat_to_points(mat):
     for x in xrange(mat.shape[0]):
         for y in xrange(mat.shape[1]):
             if mat[x,y] > 0:
-                points.append((float(x), float(y)))
+                points.append(np.array((float(x) / mat.shape[0], float(y) / mat.shape[1])))
     return points
 
-### correlation dimension time, friends
+def l2_dist(fst, snd):
+    return np.sum((fst - snd) ** 2)
+
+def correlation_integral(points, epsilon, dist_fn=l2_dist):
+    num_corrs = 0
+    for point1, point2 in itertools.product(points, points):
+        if dist_fn(point1, point2) < epsilon:
+            num_corrs += 1
+    return float(num_corrs) / float(len(points) ** 2)
 
 if __name__ == "__main__":
+    sierpinski_points = mat_to_points(sierpinski(5))
+    epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+    correlation_integrals = []
+    for epsilon in epsilons:
+        correlation_integrals.append(correlation_integral(sierpinski_points, epsilon))
+    plt.loglog(epsilons, correlation_integrals)
+    plt.show()
