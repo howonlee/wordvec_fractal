@@ -1,4 +1,4 @@
-This is the code supplement to [this article]().
+This is the code supplement to [this article](http://howonlee.github.io/2016/02/05/Fractal-20Wordvecs.html).
 
 Instructions for running:
 ==
