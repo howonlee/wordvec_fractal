@@ -1,6 +1,8 @@
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 import matplotlib
+import datetime
 import itertools
 
 def sierpinski(order=5):
@@ -34,10 +36,11 @@ def sqrt_dist(fst, snd):
 def memoize_distances(pts, dist_fn=sqrt_dist):
     distances = []
     ctr = 0
+    total = len(pts) ** 2
     for pt1, pt2 in itertools.product(pts, pts):
         ctr += 1
-        if ctr % 10000 == 0:
-            print "memoizing: ", ctr
+        if ctr % 500000 == 0:
+            print "memoizing: ", ctr, " / ", total, " : ", datetime.datetime.now()
         distances.append(dist_fn(pt1, pt2))
     return distances
 
@@ -47,7 +50,7 @@ def correlation_integral(distances, epsilon):
 def sierpinski_correlation():
     # circle is a c&p of this, only it takes an obnoxiously long time
     sierpinski_points = mat_to_points(sierpinski())
-    epsilons = np.logspace(-4, -1, num=10, base=2.0)
+    epsilons = np.logspace(-5, -2, num=10, base=2.0)
     print epsilons
     div_epsilons = np.array([np.log2(epsilon / epsilons[0]) for epsilon in epsilons])
     log_correlation_integrals = []
@@ -59,15 +62,37 @@ def sierpinski_correlation():
     p = np.polyfit(div_epsilons, log_correlation_integrals, 1)
     plt.plot(div_epsilons, log_correlation_integrals, "k.", label="correlation integrals")
     plt.plot(div_epsilons, np.polyval(p, div_epsilons), 'r-', label="least squares fit")
-    plt.text(0.6, -0.7, r'$m = ' + str(p[0]) + "$", ha='center', va='center', fontsize=12)
     plt.legend(loc=1) # upper left
-    plt.title("Correlation dimension for Sierpinski Triangle")
+    plt.title("Correlation dimension for Sierpinski Triangle: slope = " + str(p[0]))
     plt.xlabel("log(epsilons / epsilons(0)), epsilons(0) chosen arbitrarily")
     plt.ylabel("log(correlation integrals)")
     plt.savefig("sierpinski")
 
 def word2vec_correlation(filename="vecs.txt"):
-    print "hi"
+    with open(filename) as word2vec_file:
+        vecs = word2vec_file.readlines()[1:]
+        vec_points = []
+        for vec in vecs:
+            np_vec = np.array(map(float, vec.split()[1:]))
+            vec_points.append(np_vec)
+        vec_points = random.sample(vec_points, 10000)
+    epsilons = np.logspace(-1.5, -0.5, num=30, base=2.0)
+    print epsilons
+    div_epsilons = np.array([np.log2(epsilon / epsilons[0]) for epsilon in epsilons])
+    log_correlation_integrals = []
+    distances = memoize_distances(vec_points)
+    for epsilon in epsilons:
+        print epsilon, " : starting..."
+        log_correlation_integrals.append(np.log2(correlation_integral(distances, epsilon)))
+        print "done"
+    p = np.polyfit(div_epsilons, log_correlation_integrals, 1)
+    plt.plot(div_epsilons, log_correlation_integrals, "k.", label="correlation integrals")
+    plt.plot(div_epsilons, np.polyval(p, div_epsilons), 'r-', label="least squares fit")
+    plt.legend(loc=0) # upper left
+    plt.title("Correlation dimension for Word2Vec Points: slope = " + str(p[0])[:5])
+    plt.xlabel("log(epsilons / epsilons(0)), epsilons(0) chosen arbitrarily")
+    plt.ylabel("log(correlation integrals)")
+    plt.savefig("word2vec")
 
 if __name__ == "__main__":
     matplotlib.rcParams['figure.figsize'] = (8,5)
