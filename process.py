@@ -37,8 +37,8 @@ def correlation_integral(points, epsilon, dist_fn=sqrt_dist):
     return float(num_corrs) / float(len(points) ** 2)
 
 if __name__ == "__main__":
-    sierpinski_points = mat_to_points(circle())
-    epsilons = np.logspace(-5, -3, num=10, base=2.0)
+    sierpinski_points = mat_to_points(sierpinski())
+    epsilons = np.logspace(-4, -1, num=10, base=2.0)
     print epsilons
     div_epsilons = np.array([np.log2(epsilon / epsilons[0]) for epsilon in epsilons])
     log_correlation_integrals = []
