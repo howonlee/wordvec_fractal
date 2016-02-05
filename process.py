@@ -24,24 +24,6 @@ def mat_to_points(mat):
                 points.append((float(x), float(y)))
     return points
 
-def box_hash(point, box_size):
-    point = list(point)
-    point = map(lambda x: (x) // box_size, point)
-    return tuple(point)
-
-def num_boxes(points, box_size):
-    boxes = set()
-    for point in points:
-        hsh = box_hash(point, box_size)
-        boxes.add(hsh)
-    return len(boxes)
+### correlation dimension time, friends
 
 if __name__ == "__main__":
-    # test_pts = mat_to_points(sierpinski(order=9))
-    test_pts = mat_to_points(circle())
-    print test_pts
-    boxes = []
-    for x in [1,2,4,8,16,32,64]:
-        boxes.append(num_boxes(test_pts, x))
-    plt.loglog(boxes)
-    plt.show()
