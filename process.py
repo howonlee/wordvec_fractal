@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import itertools
 
 def sierpinski(order=5):
@@ -37,6 +38,8 @@ def correlation_integral(points, epsilon, dist_fn=sqrt_dist):
     return float(num_corrs) / float(len(points) ** 2)
 
 if __name__ == "__main__":
+    matplotlib.rcParams['figure.figsize'] = (8,5)
+    matplotlib.rcParams['savefig.dpi'] = 100
     sierpinski_points = mat_to_points(sierpinski())
     epsilons = np.logspace(-4, -1, num=10, base=2.0)
     print epsilons
@@ -48,8 +51,9 @@ if __name__ == "__main__":
         print "done"
     p = np.polyfit(div_epsilons, log_correlation_integrals, 1)
     print p
-    plt.plot(div_epsilons, log_correlation_integrals, "k.")
-    plt.plot(div_epsilons, np.polyval(p, div_epsilons), 'r-')
+    plt.plot(div_epsilons, log_correlation_integrals, "k.", label="correlation integrals")
+    plt.plot(div_epsilons, np.polyval(p, div_epsilons), 'r-', label="least squares fit")
+    plt.legend(loc='best')
     plt.title("Correlation dimension for sierpinski") ########### !!!
     plt.xlabel("log(epsilons / epsilons(0)), epsilons(0) chosen arbitrarily")
     plt.ylabel("log(correlation integrals)")
