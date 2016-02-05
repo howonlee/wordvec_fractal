@@ -11,11 +11,11 @@ def sierpinski(order=5):
     return arr
 
 def circle():
-    xx, yy = np.mgrid[:200, :200]
-    circle = (xx - 100) ** 2 + (yy - 100) ** 2
-    donut = np.logical_and(circle < (6400 + 60), circle > (6400 - 60))
-    print donut
-    return donut
+    xx, yy = np.mgrid[:80, :80]
+    circle = ((xx - 40) ** 2 + (yy - 40) ** 2) < 150
+    plt.imshow(circle)
+    plt.show()
+    return circle
 
 def mat_to_points(mat):
     points = []
@@ -25,10 +25,11 @@ def mat_to_points(mat):
                 points.append(np.array((float(x) / mat.shape[0], float(y) / mat.shape[1])))
     return points
 
-def l2_dist(fst, snd):
-    return np.sum((fst - snd) ** 2)
+def sqrt_dist(fst, snd):
+    # normal folks dist
+    return np.sqrt(np.sum((fst - snd) ** 2))
 
-def correlation_integral(points, epsilon, dist_fn=l2_dist):
+def correlation_integral(points, epsilon, dist_fn=sqrt_dist):
     num_corrs = 0
     for point1, point2 in itertools.product(points, points):
         if dist_fn(point1, point2) < epsilon:
@@ -36,13 +37,20 @@ def correlation_integral(points, epsilon, dist_fn=l2_dist):
     return float(num_corrs) / float(len(points) ** 2)
 
 if __name__ == "__main__":
-    sierpinski_points = mat_to_points(sierpinski(5))
-    epsilons = [0.0005, 0.001, 0.002, 0.004, 0.008, 0.016, 0.032, 0.064]
-    correlation_integrals = []
+    sierpinski_points = mat_to_points(circle())
+    epsilons = np.logspace(-5, -3, num=10, base=2.0)
+    print epsilons
+    div_epsilons = np.array([np.log2(epsilon / epsilons[0]) for epsilon in epsilons])
+    log_correlation_integrals = []
     for epsilon in epsilons:
-        correlation_integrals.append(correlation_integral(sierpinski_points, epsilon))
-    plt.loglog(epsilons, correlation_integrals, "o")
+        print epsilon, " : starting..."
+        log_correlation_integrals.append(np.log2(correlation_integral(sierpinski_points, epsilon)))
+        print "done"
+    p = np.polyfit(div_epsilons, log_correlation_integrals, 1)
+    print p
+    plt.plot(div_epsilons, log_correlation_integrals, "k.")
+    plt.plot(div_epsilons, np.polyval(p, div_epsilons), 'r-')
     plt.title("Correlation dimension for sierpinski") ########### !!!
-    plt.xlabel("epsilons")
-    plt.xlabel("correlation integrals")
+    plt.xlabel("log(epsilons / epsilons(0)), epsilons(0) chosen arbitrarily")
+    plt.ylabel("log(correlation integrals)")
     plt.show()
