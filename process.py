@@ -33,7 +33,11 @@ def sqrt_dist(fst, snd):
 
 def memoize_distances(pts, dist_fn=sqrt_dist):
     distances = []
+    ctr = 0
     for pt1, pt2 in itertools.product(pts, pts):
+        ctr += 1
+        if ctr % 10000 == 0:
+            print "memoizing: ", ctr
         distances.append(dist_fn(pt1, pt2))
     return distances
 
@@ -63,7 +67,7 @@ def sierpinski_correlation():
     plt.savefig("sierpinski")
 
 def word2vec_correlation(filename="vecs.txt"):
-    pass
+    print "hi"
 
 if __name__ == "__main__":
     matplotlib.rcParams['figure.figsize'] = (8,5)
